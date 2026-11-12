@@ -7,3 +7,7 @@
    -> Oui : git checkout <commit> -- churn_model.py
 3. Un camarade peut-il reproduire notre travail sur une autre machine ?
    -> Oui pour le code et les données : git clone.
+## TP3
+1. Meilleur modele ? -> MLflow trie les runs par f1, le resultat est date et conserve.
+2. Redonner l'Essai 1 ? -> mlflow.sklearn.load_model('runs:/<id>/model').
+3. Reproduire sur une autre machine ? -> En partie : code (Git), parametres et versions (requirements.txt du run). Reste l'environnement identique : Docker.
