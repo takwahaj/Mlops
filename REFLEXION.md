@@ -11,3 +11,8 @@
 1. Meilleur modele ? -> MLflow trie les runs par f1, le resultat est date et conserve.
 2. Redonner l'Essai 1 ? -> mlflow.sklearn.load_model('runs:/<id>/model').
 3. Reproduire sur une autre machine ? -> En partie : code (Git), parametres et versions (requirements.txt du run). Reste l'environnement identique : Docker.
+
+## TP4
+1. Designer le modele officiel ? -> alias champion : models:/churn-model@champion.
+2. Une application utilise le modele ? -> requete POST /predict avec un JSON.
+3. Changer de champion ? -> deplacer l'alias et redemarrer l'API, le code ne change pas.
