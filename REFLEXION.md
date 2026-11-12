@@ -16,3 +16,8 @@
 1. Designer le modele officiel ? -> alias champion : models:/churn-model@champion.
 2. Une application utilise le modele ? -> requete POST /predict avec un JSON.
 3. Changer de champion ? -> deplacer l'alias et redemarrer l'API, le code ne change pas.
+
+## TP5
+1. Pourquoi Docker ? -> l'image contient Python, bibliotheques, code et modele : meme comportement partout.
+2. Pourquoi Compose ? -> une commande demarre MLflow et l'API ensemble.
+3. Role du volume ? -> les donnees MLflow survivent a docker compose down (sauf avec -v).

@@ -1,3 +1,4 @@
+import os
 from typing import Literal
 
 import mlflow
@@ -8,9 +9,14 @@ from pydantic import BaseModel
 
 app = FastAPI(title="API Churn")
 
-# Le champion est chargé UNE SEULE FOIS, au démarrage
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
-model = mlflow.sklearn.load_model("models:/churn-model@champion")
+# Configuration lue dans les variables d'environnement
+TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
+MODEL_URI = os.getenv("MODEL_URI", "models:/churn-model@champion")
+
+# Champion chargé UNE SEULE FOIS, au démarrage
+mlflow.set_tracking_uri(TRACKING_URI)
+model = mlflow.sklearn.load_model(MODEL_URI)
+print(f"Modèle chargé depuis : {MODEL_URI}")
 
 
 class Client(BaseModel):
