@@ -29,7 +29,7 @@ class Client(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ko"}
 
 
 @app.post("/predict")
