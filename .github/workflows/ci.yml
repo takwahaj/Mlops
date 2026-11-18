@@ -1,0 +1,59 @@
+name: CI churn
+
+on:
+  push:
+    branches: ["develop", "tp*"]
+  pull_request:
+    branches: ["develop"]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Installer les bibliothèques
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Entraîner le modèle
+        run: python entrainer_ci.py
+      - name: Lancer les tests
+        run: pytest test_ci.py -v
+      - name: Conserver le modèle
+        uses: actions/upload-artifact@v4
+        with:
+          name: modele
+          path: model/
+
+  image:
+    needs: tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: modele
+          path: model
+      - name: Calculer le nom de l'image
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE=ghcr.io/$OWNER/churn-api" >> "$GITHUB_ENV"
+      - name: Construire l'image
+        run: docker build -t $IMAGE:latest -t $IMAGE:${{ github.sha }} .
+      - name: Se connecter à GHCR
+        if: github.ref == 'refs/heads/develop'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publier l'image
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          docker push $IMAGE:latest
+          docker push $IMAGE:${{ github.sha }}
